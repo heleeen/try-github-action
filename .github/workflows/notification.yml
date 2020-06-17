@@ -86,14 +86,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
 
       # Notification for Failed
       - name: exit 1 test
         run: aaaaa
 
+      # i like it
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
+          fields: repo,message,commit,action,eventName,ref,workflow,job,took
+          username: "try-github-action"
+          icon_emoji: ':troll:'
+          author_name: "${{ github.actor }}'s Test Result"
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
