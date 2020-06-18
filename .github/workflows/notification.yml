@@ -82,7 +82,7 @@ jobs:
           fields: repo,message,commit,action,eventName,ref,workflow,job,took
           username: "try-github-action"
           icon_emoji: ':troll:'
-          author_name: "${{ github.actor }}'s Test Result"
+          author_name: "${{ github.actor }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -94,13 +94,13 @@ jobs:
 
       # i like it
       - uses: 8398a7/action-slack@v3
+        if: always()
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,action,eventName,ref,workflow,job,took
           username: "try-github-action"
           icon_emoji: ':troll:'
-          author_name: "${{ github.actor }}'s Test Result"
+          author_name: "${{ github.actor }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
