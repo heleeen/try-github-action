@@ -1,0 +1,11 @@
+name: try notification
+
+on: push
+
+jobs:
+  notification_test:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: sample
+        run: date
