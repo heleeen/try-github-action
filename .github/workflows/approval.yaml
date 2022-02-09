@@ -1,0 +1,11 @@
+name: approval test
+
+on:
+  push
+
+jobs:
+  approval_test:
+    runs-on: ubuntu-20.04
+    environment: test
+    steps:
+      - uses: actions/checkout@v2
