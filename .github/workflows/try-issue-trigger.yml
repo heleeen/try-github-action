@@ -1,0 +1,19 @@
+name: git-issue-release
+
+on:
+  issues:
+
+jobs:
+  try_issue_trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get issue body
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_body = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.issue.number }},
+            })
+            console.log(issue_body.data.body.match(/Revision: (.*)/)[1])
