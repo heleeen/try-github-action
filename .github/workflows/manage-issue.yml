@@ -1,19 +1,40 @@
 name: git-issue-release
 
 on:
-  issues:
+  push:
+
+env:
+  BODY: 'test issue url is URL'
+  PLACEHOLDER: 'URL'
+  #
+  RELEASE_LABEL: 'release'
+  ISSUE_TITLE: 'release'
 
 jobs:
   try_issue_trigger:
     runs-on: ubuntu-latest
     steps:
-      - name: get issue body
+      - name: create or update issue body
         uses: actions/github-script@v6
         with:
           script: |
-            const issue_body = await github.rest.issues.get({
+            const repo_settings = {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: ${{ github.event.issue.number }},
-            })
-            console.log(issue_body.data.body)
+              labels: ['${{ env.RELEASE_LABEL }}'],
+              title: '${{ env.ISSUE_TITLE }}',
+            }
+            const issue = await github.rest.issues.listForRepo(repo_settings)
+            let release_issue_number
+            if (issue.data.length === 0) {
+              const res = await github.rest.issues.create(repo_settings)
+              release_issue_number = res.data.number
+            } else {
+              release_issue_number = issue.data[0].number
+            }
+            const release_issue_body = '${{ env.BODY }}'.replace(/${{ env.PLACEHOLDER }}/g, 'https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/issues/' + release_issue_number)
+            github.rest.issues.update({
+              ...repo_settings,
+              issue_number: release_issue_number,
+              body: release_issue_body,
+            });
