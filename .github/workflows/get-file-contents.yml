@@ -1,0 +1,15 @@
+name: get-file-contents
+
+on:
+  push:
+
+jobs:
+  get_file_contents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: get file contents
+        run: |
+          printf "TEST=$(cat ./test.txt)" >> $GITHUB_ENV
+      - name: check
+        run: echo ${{ env.TEST }}
