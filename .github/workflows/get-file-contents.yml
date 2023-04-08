@@ -1,0 +1,32 @@
+name: get-file-contents
+
+on:
+  push:
+
+jobs:
+  get_file_contents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: get file contents
+        run: |
+          echo "TEST=$(cat ./test.txt)" >> $GITHUB_ENV
+      - name: check
+        run: echo ${{ env.TEST }}
+
+      - name: generate libsonnet file
+        run: |
+          echo -e '{\n  ref: '\''${{ github.ref_name }}'\''\n}' > test.libsonnet
+      - run: cat test.libsonnet
+
+      - name: set params
+        id: params
+        run: |
+          echo "name=test_name" >> "$GITHUB_OUTPUT"
+          echo "version=test_version" >> "$GITHUB_OUTPUT"
+
+      - name: generate libsonnet file
+        run: |
+          echo -e '{\n  name: '\''${{ steps.params.outputs.name }}'\'',\n  version: '\''${{ steps.params.outputs.version }}'\''\n}' \
+          > revision.libsonnet
+      - run: cat revision.libsonnet
